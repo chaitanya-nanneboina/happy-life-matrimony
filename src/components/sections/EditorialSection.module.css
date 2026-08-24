@@ -1,0 +1,214 @@
+.section {
+  background-color: var(--color-cream);
+  padding-block: var(--space-6) var(--space-8);
+}
+
+@media (max-width: 768px) {
+  .section {
+    padding-block: var(--space-5) var(--space-6);
+  }
+}
+
+.header {
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto var(--space-5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.heading {
+  font-size: var(--text-3xl);
+  color: var(--color-charcoal);
+  margin-bottom: var(--space-2);
+  font-weight: 700;
+}
+
+.subhead {
+  font-size: var(--text-base);
+  color: var(--color-text-muted);
+  line-height: 1.6;
+}
+
+/* Asymmetric Collage Grid */
+.collageGrid {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+}
+
+@media (max-width: 900px) {
+  .collageGrid {
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+  }
+}
+
+.rightStack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.bottomRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+}
+
+@media (max-width: 480px) {
+  .bottomRow {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Image Block Components */
+.imageBlock {
+  position: relative;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  background-color: var(--color-cream-dark);
+}
+
+.imageInner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.largeBlock {
+  aspect-ratio: 4/3.4;
+}
+
+.tallBlock {
+  aspect-ratio: 4/3.4;
+}
+
+.smallBlock {
+  aspect-ratio: 1.4/1;
+}
+
+@media (min-width: 901px) {
+  .largeBlock {
+    height: 100%;
+  }
+  .tallBlock {
+    flex: 1;
+    aspect-ratio: unset;
+  }
+}
+
+.img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-slow);
+}
+
+/* Hover Effect: Gentle scale zoom */
+.imageBlock:hover .img {
+  transform: scale(1.03);
+}
+
+/* Gradients Overlays */
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(30, 26, 22, 0.6) 0%, rgba(30, 26, 22, 0.1) 40%, transparent 100%);
+  transition: opacity var(--transition-base);
+}
+
+/* Content overlays */
+.contentOverlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: var(--space-3);
+  color: var(--color-white);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  pointer-events: none;
+}
+
+.cardSub {
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--color-champagne);
+  opacity: 0.85;
+}
+
+.cardTitle {
+  font-family: var(--font-body);
+  font-size: var(--text-md);
+  font-weight: 700;
+  color: var(--color-white);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: transform var(--transition-base);
+}
+
+.arrow {
+  opacity: 0;
+  transform: translate(-4px, 4px);
+  transition: opacity var(--transition-base), transform var(--transition-base);
+  color: var(--color-champagne);
+}
+
+/* Interactive hover content moves */
+.imageBlock:hover .arrow {
+  opacity: 1;
+  transform: translate(0, 0);
+}
+
+.imageBlock:hover .cardTitle {
+  transform: translateX(4px);
+}
+
+/* Quote Block Stylings */
+.quoteBlock {
+  max-width: 720px;
+  margin: 0 auto;
+  text-align: center;
+  padding: var(--space-6) var(--space-4);
+  position: relative;
+  border-top: 1px solid var(--color-border);
+}
+
+.quoteBlock::before {
+  content: '“';
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-editorial);
+  font-size: 6rem;
+  color: var(--color-champagne);
+  line-height: 1;
+  opacity: 0.6;
+}
+
+.quoteText {
+  font-family: var(--font-editorial);
+  font-size: var(--text-xl);
+  font-style: italic;
+  color: var(--color-charcoal);
+  line-height: 1.5;
+  margin-bottom: var(--space-2);
+}
+
+.quoteAuthor {
+  font-size: var(--text-xs);
+  color: var(--color-text-light);
+  font-style: normal;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}

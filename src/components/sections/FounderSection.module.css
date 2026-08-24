@@ -1,0 +1,152 @@
+.section {
+  background: linear-gradient(180deg, var(--color-cream-dark) 0%, var(--color-cream) 100%);
+  position: relative;
+  overflow: hidden;
+  border-top: 1px solid var(--color-border);
+}
+
+.inner {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  gap: var(--space-8);
+  align-items: center;
+}
+
+@media (max-width: 860px) {
+  .inner {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+}
+
+/* Image Column styles */
+.imageCol {
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.imageFrame {
+  position: relative;
+  width: 100%;
+  max-width: 320px;
+}
+
+.imageBg {
+  position: absolute;
+  inset: 12px -12px -12px 12px;
+  background-color: var(--color-champagne-light);
+  border: 1px solid var(--color-champagne);
+  border-radius: var(--radius-lg);
+  z-index: 0;
+}
+
+.imageWrapper {
+  position: relative;
+  z-index: 1;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  aspect-ratio: 4/5;
+}
+
+.founderImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  transition: transform var(--transition-slow);
+}
+
+.imageFrame:hover .founderImg {
+  transform: scale(1.02);
+}
+
+/* Founder badge overlay */
+.founderBadge {
+  position: absolute;
+  bottom: -10px;
+  right: -10px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background-color: var(--color-white);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-full);
+  padding: 6px 14px;
+  box-shadow: var(--shadow-sm);
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--color-maroon);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.badgeHeart {
+  color: var(--color-maroon);
+}
+
+/* Content Column styles */
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.name {
+  font-size: var(--text-3xl);
+  color: var(--color-charcoal);
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.philosophy {
+  font-family: var(--font-editorial);
+  font-size: var(--text-lg);
+  font-style: italic;
+  color: var(--color-maroon-dark);
+  line-height: 1.5;
+  border-left: 2px solid var(--color-champagne);
+  padding-left: 16px;
+  margin-block: 4px;
+  font-weight: 500;
+}
+
+.bioText p {
+  font-size: var(--text-base);
+  color: var(--color-text-muted);
+  line-height: 1.7;
+}
+
+/* Credibility badges list */
+.credibilityList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.credibilityItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background-color: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  box-shadow: var(--shadow-sm);
+}
+
+.pointIcon {
+  color: var(--color-maroon);
+}
+
+/* Action button styles */
+.contactBtn {
+  width: fit-content;
+  margin-top: 8px;
+}

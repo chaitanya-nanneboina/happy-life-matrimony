@@ -1,0 +1,218 @@
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 900;
+  padding-block: 24px;
+  background: transparent;
+  border-bottom: 1px solid transparent;
+  transition: padding-block var(--transition-base), background var(--transition-base), border-color var(--transition-base), box-shadow var(--transition-base);
+}
+
+.scrolled {
+  background: rgba(255, 253, 249, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(128, 26, 43, 0.06);
+  box-shadow: var(--shadow-sm);
+  padding-block: 14px;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+/* Logo */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  flex-shrink: 0;
+  outline: none;
+}
+
+.logoIcon {
+  color: var(--color-maroon);
+  fill: rgba(128, 26, 43, 0.05);
+  filter: drop-shadow(0 2px 4px rgba(128, 26, 43, 0.15));
+  transition: transform var(--transition-base);
+}
+
+.logo:hover .logoIcon {
+  transform: scale(1.1);
+}
+
+.logoText {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.logoMain {
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--color-charcoal);
+  letter-spacing: -0.01em;
+}
+
+.logoSub {
+  font-family: var(--font-body);
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-light);
+}
+
+/* Desktop Nav Links */
+.navLinks {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  list-style: none;
+}
+
+.navLink {
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  padding: 8px 16px;
+  position: relative;
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.navLink::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 16px;
+  right: 16px;
+  height: 1.5px;
+  background-color: var(--color-maroon);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--transition-base);
+}
+
+.navLink:hover {
+  color: var(--color-maroon);
+}
+
+.navLink:hover::after {
+  transform: scaleX(1);
+}
+
+/* CTA Button wrapper */
+.ctaWrapper {
+  flex-shrink: 0;
+}
+
+.ctaBtn {
+  transform: translateY(0);
+  transition: all var(--transition-base);
+}
+
+.ctaBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Hamburger mobile button */
+.hamburger {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-charcoal);
+  cursor: pointer;
+  padding: 0;
+  transition: all var(--transition-fast);
+}
+
+.hamburger:hover {
+  background: var(--color-cream-dark);
+  border-color: var(--color-border-strong);
+}
+
+/* Mobile Menu */
+.mobileMenu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: rgba(255, 253, 249, 0.98);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--color-border-strong);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  display: none;
+  z-index: 899;
+}
+
+.mobileMenu ul {
+  padding: 16px 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  list-style: none;
+}
+
+.mobileMenuOpen {
+  max-height: 380px;
+}
+
+.mobileLink {
+  display: block;
+  padding: 12px 16px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  transition: all var(--transition-fast);
+}
+
+.mobileLink:hover {
+  background: var(--color-cream-dark);
+  color: var(--color-maroon);
+}
+
+.mobileCtaItem {
+  margin-top: 12px;
+  list-style: none;
+}
+
+.mobileCta {
+  display: flex;
+  width: 100%;
+  text-align: center;
+  justify-content: center;
+}
+
+@media (max-width: 768px) {
+  .navLinks { display: none; }
+  .ctaWrapper { display: none; }
+  .hamburger { display: flex; }
+  .mobileMenu { display: block; }
+  
+  .header {
+    padding-block: 16px;
+  }
+  .scrolled {
+    padding-block: 10px;
+  }
+}

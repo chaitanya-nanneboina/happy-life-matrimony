@@ -1,0 +1,252 @@
+/* Admin Login — scoped to admin, independent of public site styles */
+.page {
+  min-height: 100vh;
+  background: #F4F5F7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+}
+
+.card {
+  width: 100%;
+  max-width: 400px;
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 16px;
+  padding: 36px 32px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Brand */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brandLogo {
+  width: 40px;
+  height: 40px;
+  background: #FDF2F4;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.brandName {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #1A1614;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.brandChip {
+  margin-top: 3px;
+  display: inline-block;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #801A2B;
+  background: rgba(128, 26, 43, 0.07);
+  padding: 2px 7px;
+  border-radius: 4px;
+}
+
+.divider {
+  height: 1px;
+  background: #F0F0F0;
+  margin: 0 -4px;
+}
+
+/* Heading */
+.heading {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #1A1614;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.subtitle {
+  font-size: 0.8rem;
+  color: #6B7280;
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+/* Form */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #374151;
+  letter-spacing: 0.01em;
+}
+
+.input {
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  font-size: 0.875rem;
+  color: #1A1614;
+  background: #FAFAFA;
+  border: 1px solid #D1D5DB;
+  border-radius: 10px;
+  padding: 11px 14px;
+  width: 100%;
+  height: 44px;
+  outline: none;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.input::placeholder {
+  color: #9CA3AF;
+}
+
+.input:focus {
+  border-color: #801A2B;
+  background: #FFFFFF;
+  box-shadow: 0 0 0 3px rgba(128, 26, 43, 0.08);
+}
+
+/* Password wrapper */
+.pwWrapper {
+  position: relative;
+}
+
+.pwToggle {
+  position: absolute;
+  right: 13px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #9CA3AF;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  transition: color 0.15s ease;
+  border-radius: 4px;
+}
+
+.pwToggle:hover {
+  color: #374151;
+}
+
+.pwToggle:focus-visible {
+  outline: 2px solid #801A2B;
+  outline-offset: 2px;
+}
+
+/* Error */
+.error {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 13px;
+  background: rgba(176, 42, 55, 0.05);
+  border: 1px solid rgba(176, 42, 55, 0.18);
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #9B1C2C;
+  line-height: 1.4;
+}
+
+/* Submit button */
+.submitBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  height: 44px;
+  background: #801A2B;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 10px;
+  font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.18s ease, transform 0.15s ease, box-shadow 0.18s ease;
+  margin-top: 4px;
+  letter-spacing: 0.01em;
+}
+
+.submitBtn:hover:not(:disabled) {
+  background: #9B283C;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(128, 26, 43, 0.25);
+}
+
+.submitBtn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.submitBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Spinner */
+.spinner {
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #FFFFFF;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Footer note */
+.footer {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  color: #9CA3AF;
+  justify-content: center;
+  line-height: 1.4;
+}
+
+@media (max-width: 480px) {
+  .card {
+    padding: 28px 20px;
+    border-radius: 12px;
+  }
+}

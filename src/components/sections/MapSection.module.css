@@ -1,0 +1,133 @@
+.section {
+  background-color: var(--color-cream-dark);
+  border-top: 1px solid var(--color-border);
+}
+
+.inner {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  gap: var(--space-8);
+  align-items: center;
+}
+
+@media (max-width: 860px) {
+  .inner {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+}
+
+/* Info Column styles */
+.infoCol {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  text-align: left;
+}
+
+.heading {
+  font-size: var(--text-3xl);
+  color: var(--color-charcoal);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.subhead {
+  font-size: var(--text-base);
+  color: var(--color-text-muted);
+  line-height: 1.6;
+  max-width: 480px;
+}
+
+/* Info Details */
+.infoItems {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-top: 8px;
+}
+
+.infoItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.infoIcon {
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-sm);
+  background-color: rgba(128, 26, 43, 0.05);
+  border: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-maroon);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.infoText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.infoText strong {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-charcoal);
+}
+
+.infoText span,
+.phoneLink {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  text-decoration: none;
+}
+
+.phoneLink:hover {
+  color: var(--color-maroon);
+}
+
+/* Action button */
+.directionsBtn {
+  width: fit-content;
+  margin-top: var(--space-2);
+}
+
+/* Map Column styles */
+.mapCol {
+  width: 100%;
+}
+
+.mapWrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4/3;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--color-border-strong);
+  background-color: var(--color-cream-deep);
+}
+
+.iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+}
+
+@media (max-width: 860px) {
+  .mapWrapper {
+    aspect-ratio: 16/10;
+    min-height: 260px;
+  }
+  .directionsBtn {
+    width: 100%;
+    justify-content: center;
+  }
+}

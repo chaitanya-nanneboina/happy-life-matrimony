@@ -1,0 +1,386 @@
+.form {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: all var(--transition-base);
+}
+
+/* Variants */
+.hero {
+  background: var(--color-white);
+  border: 1px solid var(--color-border-strong);
+  box-shadow: var(--shadow-xl);
+}
+
+.secondary {
+  background: var(--color-white);
+  border: 1px solid var(--color-border-strong);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Header */
+.formHeader {
+  padding: var(--space-4) var(--space-4) var(--space-2);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.formTitle {
+  font-family: var(--font-body);
+  font-size: var(--text-xl);
+  font-weight: 700;
+  color: var(--color-charcoal);
+  margin-bottom: 4px;
+  margin-top: var(--space-2);
+  line-height: 1.25;
+}
+
+.formSubtitle {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+/* Body */
+.formBody {
+  padding: var(--space-3) var(--space-4) var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+/* Inputs grid */
+.twoCol {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-2);
+}
+
+@media (max-width: 480px) {
+  .twoCol {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Privacy reassurance */
+.privacy {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 0.75rem;
+  color: var(--color-text-light);
+  line-height: 1.5;
+  margin-top: 12px;
+  text-align: left;
+}
+
+.privacyIcon {
+  flex-shrink: 0;
+  color: var(--color-text-light);
+  margin-top: 2px;
+}
+
+/* Back navigation */
+.backBtn {
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: color var(--transition-fast);
+}
+
+.backBtn:hover {
+  color: var(--color-maroon);
+}
+
+/* Resend row */
+.resendRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.resendText {
+  font-size: var(--text-xs);
+  color: var(--color-text-light);
+}
+
+.resendBtn {
+  background: none;
+  border: none;
+  color: var(--color-maroon);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color var(--transition-fast);
+}
+
+.resendBtn:hover:not(:disabled) {
+  color: var(--color-maroon-light);
+}
+
+.resendBtn:disabled {
+  color: var(--color-text-light);
+  text-decoration: none;
+  cursor: not-allowed;
+}
+
+/* Onboarding Progress Indicator */
+.progressContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  margin-bottom: var(--space-2);
+  padding-inline: 8px;
+}
+
+.progressTrack {
+  position: absolute;
+  top: 10px;
+  left: 18px;
+  right: 18px;
+  height: 2px;
+  background-color: var(--color-cream-deep);
+  z-index: 1;
+}
+
+.progressFill {
+  position: absolute;
+  top: 10px;
+  left: 18px;
+  height: 2px;
+  background-color: var(--color-maroon);
+  z-index: 2;
+  transition: width var(--transition-base);
+}
+
+.progressStep {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  position: relative;
+  z-index: 3;
+  width: 50px;
+}
+
+.stepCircle {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background-color: var(--color-white);
+  border: 2px solid var(--color-cream-deep);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--color-text-light);
+  transition: all var(--transition-base);
+}
+
+.stepLabel {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--color-text-light);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.progressStepActive .stepCircle {
+  border-color: var(--color-maroon);
+  background-color: var(--color-maroon);
+  color: var(--color-white);
+}
+
+.progressStepActive .stepLabel {
+  color: var(--color-maroon);
+  font-weight: 700;
+}
+
+.progressStepDone .stepCircle {
+  border-color: var(--color-maroon);
+  background-color: var(--color-white);
+  color: var(--color-maroon);
+}
+
+.progressStepDone .stepLabel {
+  color: var(--color-maroon);
+}
+
+/* Success Journey State */
+.successBody {
+  padding: var(--space-3) var(--space-4) var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.journeyCard {
+  background-color: var(--color-cream-dark);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.journeyStep {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  position: relative;
+}
+
+.journeyStep:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: 24px;
+  top: 26px;
+  bottom: -22px;
+  width: 1px;
+  border-left: 1px dashed var(--color-text-light);
+  opacity: 0.4;
+}
+
+.journeyBadge {
+  font-size: 0.65rem;
+  font-weight: 750;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 2px 8px;
+  border-radius: var(--radius-xs);
+  width: fit-content;
+}
+
+.badgeProgress {
+  background-color: rgba(128, 26, 43, 0.08);
+  color: var(--color-maroon);
+  border: 1px solid rgba(128, 26, 43, 0.15);
+}
+
+.badgePending {
+  background-color: var(--color-white);
+  color: var(--color-text-light);
+  border: 1px solid var(--color-border-strong);
+}
+
+.journeyTitle {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--color-charcoal);
+}
+
+.journeyDesc {
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--color-text-muted);
+}
+
+.successFooter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+  background-color: rgba(39, 174, 96, 0.05);
+  border: 1px solid rgba(39, 174, 96, 0.15);
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  color: var(--color-charcoal);
+  text-align: center;
+}
+
+.successSparkle {
+  color: #27ae60;
+  flex-shrink: 0;
+}
+
+/* ── OTP Expiry Timer ── */
+.otpTimer {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  margin: 0 var(--space-4);
+  background: rgba(39, 174, 96, 0.05);
+  border: 1px solid rgba(39, 174, 96, 0.18);
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #198754;
+  transition: all var(--transition-fast);
+}
+
+.otpTimerWarning {
+  background: rgba(243, 156, 18, 0.06);
+  border-color: rgba(243, 156, 18, 0.25);
+  color: #d68910;
+}
+
+.otpTimerExpired {
+  background: rgba(176, 42, 55, 0.06);
+  border-color: rgba(176, 42, 55, 0.2);
+  color: #b02a37;
+}
+
+/* ── Attempts remaining warning ── */
+.attemptsWarning {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: rgba(243, 156, 18, 0.07);
+  border: 1px solid rgba(243, 156, 18, 0.2);
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #d68910;
+}
+
+/* ── Resend button flex layout ── */
+.resendBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  color: var(--color-maroon);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color var(--transition-fast);
+}
+
+.resendBtn:hover:not(:disabled) {
+  color: var(--color-maroon-light);
+}
+
+.resendBtnDisabled {
+  color: var(--color-text-light) !important;
+  text-decoration: none !important;
+  cursor: not-allowed !important;
+}
+
+.resendSpinner {
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
