@@ -14,5 +14,5 @@ export default async function AdminDashboardPage() {
     redirect("/login");
   }
 
-  return <AdminDashboard adminName={session.username} />;
+  return <AdminDashboard adminName={String(session.username)} />;
 }
