@@ -23,6 +23,7 @@
   flex-direction: column;
   gap: var(--space-3);
   text-align: left;
+  min-width: 0; /* Prevent grid child overflow */
 }
 
 .heading {
@@ -86,6 +87,8 @@
   font-size: var(--text-sm);
   color: var(--color-text-muted);
   text-decoration: none;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .phoneLink:hover {
@@ -101,6 +104,7 @@
 /* Map Column styles */
 .mapCol {
   width: 100%;
+  min-width: 0; /* Prevent grid child overflow */
 }
 
 .mapWrapper {

@@ -96,6 +96,8 @@
   color: var(--color-text-muted);
   line-height: 1.65;
   margin: 0;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 /* Divider Line */
@@ -198,5 +200,10 @@
     flex-direction: column;
     gap: 8px;
     padding: 16px;
+  }
+  .bannerText span,
+  .bannerText strong {
+    overflow-wrap: break-word;
+    word-break: break-word;
   }
 }

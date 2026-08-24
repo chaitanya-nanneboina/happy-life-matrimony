@@ -91,6 +91,12 @@ html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
   font-size: 16px;
+  /* Prevent horizontal overflow at the root level.
+     This is the critical fix: overflow-x on html (not just body) ensures
+     the viewport-level scroll container is locked, which also allows
+     position:fixed children (WhatsApp button) to stay correctly placed. */
+  overflow-x: hidden;
+  overflow-x: clip; /* Modern override: clip doesn't create a scroll container */
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -111,6 +117,22 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
+  overflow-x: clip; /* Modern: no scroll container = position:fixed works */
+  min-width: 0;
+}
+
+/* ==========================================
+   GLOBAL MEDIA & TEXT OVERFLOW SAFETY
+   ========================================== */
+img, video, iframe, svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Prevent long strings/URLs from breaking layout width */
+p, li, td, th, blockquote {
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 /* ==========================================
@@ -525,6 +547,9 @@ a {
   position: fixed;
   bottom: 24px;
   right: 24px;
+  /* Safe-area support for notched devices */
+  bottom: max(24px, env(safe-area-inset-bottom, 24px));
+  right: max(24px, env(safe-area-inset-right, 24px));
   z-index: 999;
   width: 52px;
   height: 52px;
@@ -539,6 +564,8 @@ a {
   justify-content: center;
   transition: all var(--transition-base);
   text-decoration: none;
+  /* Never let the button cause layout overflow */
+  flex-shrink: 0;
 }
 
 .whatsapp-fab:hover {
@@ -554,7 +581,18 @@ a {
   .whatsapp-fab {
     bottom: 16px;
     right: 16px;
+    bottom: max(16px, env(safe-area-inset-bottom, 16px));
+    right: max(16px, env(safe-area-inset-right, 16px));
     width: 46px;
     height: 46px;
+  }
+}
+
+@media (max-width: 390px) {
+  .whatsapp-fab {
+    bottom: 12px;
+    right: 12px;
+    width: 44px;
+    height: 44px;
   }
 }

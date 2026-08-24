@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const admin = getAdminUser(username);
+    const admin = await getAdminUser(username);
     if (!admin) {
       return NextResponse.json(
         { success: false, message: "Invalid credentials." },

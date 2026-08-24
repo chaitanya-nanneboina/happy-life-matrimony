@@ -58,6 +58,19 @@
   .twoCol {
     grid-template-columns: 1fr;
   }
+  /* Reduce horizontal padding so form fits comfortably on 320px screens */
+  .formHeader {
+    padding: var(--space-3) var(--space-2) var(--space-2);
+  }
+  .formBody {
+    padding: var(--space-2) var(--space-2) var(--space-3);
+  }
+  .successBody {
+    padding: var(--space-3) var(--space-2) var(--space-3);
+  }
+  .otpTimer {
+    margin-inline: var(--space-1);
+  }
 }
 
 /* Privacy reassurance */

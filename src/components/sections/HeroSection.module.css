@@ -73,6 +73,7 @@
   flex-direction: column;
   gap: var(--space-3);
   text-align: left;
+  min-width: 0; /* Prevent grid child from overflowing its track */
 }
 
 /* Eyebrow */
@@ -200,6 +201,7 @@
   position: sticky;
   top: 110px;
   z-index: 5;
+  min-width: 0; /* Prevent grid child from overflowing its track */
 }
 
 @media (max-width: 860px) {
@@ -209,9 +211,27 @@
     width: 100%;
     max-width: 480px;
     margin-inline: auto;
+    min-width: 0;
   }
   .collage {
     display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero {
+    padding-top: calc(60px + var(--space-2));
+    padding-bottom: var(--space-3);
+  }
+  .formCol {
+    max-width: 100%;
+  }
+  .headline {
+    /* Prevent very long headline from overflowing on 320px */
+    font-size: clamp(1.8rem, 8vw, var(--text-4xl));
+  }
+  .subhead {
+    max-width: 100%;
   }
 }
 

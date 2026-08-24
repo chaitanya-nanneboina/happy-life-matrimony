@@ -33,7 +33,7 @@ export async function PATCH(
     );
   }
 
-  updateProfileStatus(profileId, status);
+  await updateProfileStatus(profileId, status);
 
   return NextResponse.json({ success: true, id: profileId, status });
 }
@@ -59,7 +59,7 @@ export async function DELETE(
     );
   }
 
-  deleteProfile(profileId);
+  await deleteProfile(profileId);
 
   return NextResponse.json({ success: true, message: "Profile deleted permanently." });
 }

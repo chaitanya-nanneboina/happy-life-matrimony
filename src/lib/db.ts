@@ -1,85 +1,96 @@
-import Database from "better-sqlite3";
+import { neon } from "@neondatabase/serverless";
 import bcrypt from "bcryptjs";
-import path from "path";
-import fs from "fs";
 
-const ABSOLUTE_DB_PATH = path.join(process.cwd(), "data", "happylife.db");
+// ---------------------------------------------------------------------------
+// Connection
+// ---------------------------------------------------------------------------
 
-// Ensure data directory exists
-const dataDir = path.dirname(ABSOLUTE_DB_PATH);
-if (!fs.existsSync(dataDir)) {
-  fs.mkdirSync(dataDir, { recursive: true });
-}
-
-let db: Database.Database | null = null;
-
-export function getDb(): Database.Database {
-  if (!db) {
-    db = new Database(ABSOLUTE_DB_PATH);
-    db.pragma("journal_mode = WAL");
-    db.pragma("foreign_keys = ON");
-    initializeSchema(db);
+function getSql() {
+  const url = process.env.DATABASE_URL;
+  if (!url) {
+    throw new Error(
+      "DATABASE_URL environment variable is not set. " +
+        "Add it to .env.local (local) and your Vercel project environment variables (production)."
+    );
   }
-  return db;
+  return neon(url);
 }
 
-function initializeSchema(db: Database.Database) {
-  db.exec(`
+// ---------------------------------------------------------------------------
+// Schema initialisation  (idempotent – safe to call on every cold start)
+// ---------------------------------------------------------------------------
+
+let schemaInitialised = false;
+
+export async function ensureSchema(): Promise<void> {
+  if (schemaInitialised) return;
+
+  const sql = getSql();
+
+  // Create tables
+  await sql`
     CREATE TABLE IF NOT EXISTS profiles (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      name TEXT NOT NULL,
-      gender TEXT NOT NULL CHECK(gender IN ('Male', 'Female', 'Other')),
-      looking_for TEXT NOT NULL CHECK(looking_for IN ('Male', 'Female', 'Either')),
-      phone TEXT NOT NULL,
-      state TEXT NOT NULL DEFAULT '',
-      district TEXT NOT NULL DEFAULT '',
-      city TEXT NOT NULL DEFAULT '',
-      submitted_at TEXT NOT NULL DEFAULT (datetime('now', 'localtime'))
-    );
+      id            BIGSERIAL PRIMARY KEY,
+      name          TEXT      NOT NULL,
+      gender        TEXT      NOT NULL CHECK (gender IN ('Male', 'Female', 'Other')),
+      looking_for   TEXT      NOT NULL CHECK (looking_for IN ('Male', 'Female', 'Either')),
+      phone         TEXT      NOT NULL,
+      state         TEXT      NOT NULL DEFAULT '',
+      district      TEXT      NOT NULL DEFAULT '',
+      city          TEXT      NOT NULL DEFAULT '',
+      status        TEXT      NOT NULL DEFAULT 'pending'
+                              CHECK (status IN ('pending', 'verified', 'rejected')),
+      submitted_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `;
 
+  await sql`
     CREATE TABLE IF NOT EXISTS admin_users (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      username TEXT UNIQUE NOT NULL,
-      password_hash TEXT NOT NULL
-    );
-  `);
+      id            BIGSERIAL PRIMARY KEY,
+      username      TEXT UNIQUE NOT NULL,
+      password_hash TEXT        NOT NULL
+    )
+  `;
 
-  // Safe migration: add status and location columns if they don't exist yet
-  try {
-    db.exec(`ALTER TABLE profiles ADD COLUMN status TEXT NOT NULL DEFAULT 'pending' CHECK(status IN ('pending', 'verified', 'rejected'))`);
-    console.log("[DB] Migrated: added status column to profiles.");
-  } catch { }
-
-  try {
-    db.exec(`ALTER TABLE profiles ADD COLUMN state TEXT NOT NULL DEFAULT ''`);
-    db.exec(`ALTER TABLE profiles ADD COLUMN district TEXT NOT NULL DEFAULT ''`);
-    db.exec(`ALTER TABLE profiles ADD COLUMN city TEXT NOT NULL DEFAULT ''`);
-    console.log("[DB] Migrated: added location columns to profiles.");
-  } catch { }
-
-  // Seed admin user if not exists
-  const adminExists = db
-    .prepare("SELECT id FROM admin_users WHERE username = ?")
-    .get("Admin");
-
-  if (!adminExists) {
+  // Seed default admin if absent
+  const rows = await sql`
+    SELECT id FROM admin_users WHERE username = 'Admin' LIMIT 1
+  `;
+  if (rows.length === 0) {
     const hash = bcrypt.hashSync("happylifematrimony@2026", 10);
-    db.prepare("INSERT INTO admin_users (username, password_hash) VALUES (?, ?)").run(
-      "Admin",
-      hash
-    );
+    await sql`
+      INSERT INTO admin_users (username, password_hash)
+      VALUES ('Admin', ${hash})
+    `;
     console.log("[DB] Admin user seeded.");
   }
+
+  schemaInitialised = true;
 }
 
-export function getAdminUser(username: string) {
-  const db = getDb();
-  return db
-    .prepare("SELECT * FROM admin_users WHERE username = ?")
-    .get(username) as { id: number; username: string; password_hash: string } | undefined;
+// ---------------------------------------------------------------------------
+// Admin users
+// ---------------------------------------------------------------------------
+
+export async function getAdminUser(
+  username: string
+): Promise<{ id: number; username: string; password_hash: string } | null> {
+  await ensureSchema();
+  const sql = getSql();
+  const rows = await sql`
+    SELECT id, username, password_hash
+    FROM   admin_users
+    WHERE  username = ${username}
+    LIMIT  1
+  `;
+  return (rows[0] as { id: number; username: string; password_hash: string }) ?? null;
 }
 
-export function createProfile(data: {
+// ---------------------------------------------------------------------------
+// Profiles – create
+// ---------------------------------------------------------------------------
+
+export async function createProfile(data: {
   name: string;
   gender: string;
   looking_for: string;
@@ -87,66 +98,186 @@ export function createProfile(data: {
   state: string;
   district: string;
   city: string;
-}) {
-  const db = getDb();
-  const result = db
-    .prepare(
-      "INSERT INTO profiles (name, gender, looking_for, phone, state, district, city) VALUES (?, ?, ?, ?, ?, ?, ?)"
+}): Promise<number> {
+  await ensureSchema();
+  const sql = getSql();
+  const rows = await sql`
+    INSERT INTO profiles (name, gender, looking_for, phone, state, district, city)
+    VALUES (
+      ${data.name},
+      ${data.gender},
+      ${data.looking_for},
+      ${data.phone},
+      ${data.state},
+      ${data.district},
+      ${data.city}
     )
-    .run(data.name, data.gender, data.looking_for, data.phone, data.state, data.district, data.city);
-  return result.lastInsertRowid;
+    RETURNING id
+  `;
+  return (rows[0] as { id: number }).id;
 }
 
+// ---------------------------------------------------------------------------
+// Profiles – update status
+// ---------------------------------------------------------------------------
 
-
-export function updateProfileStatus(id: number, status: "verified" | "rejected") {
-  const db = getDb();
-  db.prepare("UPDATE profiles SET status = ? WHERE id = ?")
-    .run(status, id);
+export async function updateProfileStatus(
+  id: number,
+  status: "verified" | "rejected"
+): Promise<void> {
+  await ensureSchema();
+  const sql = getSql();
+  await sql`
+    UPDATE profiles SET status = ${status} WHERE id = ${id}
+  `;
 }
 
-export function getProfiles(opts: {
+// ---------------------------------------------------------------------------
+// Profiles – list / search / paginate
+// ---------------------------------------------------------------------------
+
+export interface ProfileRow {
+  id: number;
+  name: string;
+  gender: string;
+  looking_for: string;
+  phone: string;
+  state: string;
+  district: string;
+  city: string;
+  status: string;
+  submitted_at: string;
+}
+
+export async function getProfiles(opts: {
   search?: string;
   gender?: string;
   status?: string;
   page?: number;
   limit?: number;
-}) {
-  const db = getDb();
+}): Promise<{ profiles: ProfileRow[]; total: number; page: number; limit: number }> {
+  await ensureSchema();
+  const sql = getSql();
+
   const { search = "", gender = "", status = "", page = 1, limit = 20 } = opts;
   const offset = (page - 1) * limit;
 
-  let where = "WHERE 1=1";
-  const params: (string | number)[] = [];
+  // Build WHERE conditions dynamically
+  // neon tagged-template literals don't support dynamic fragment composition
+  // the cleanest approach compatible with the serverless driver is to
+  // run different query variants based on the filter combination.
 
-  if (search) {
-    where += " AND (name LIKE ? OR phone LIKE ?)";
-    params.push(`%${search}%`, `%${search}%`);
+  type CountRow = { count: string };
+
+  let countRows: CountRow[];
+  let dataRows: ProfileRow[];
+
+  if (search && gender && status) {
+    const like = `%${search}%`;
+    countRows = await sql`
+      SELECT COUNT(*) AS count FROM profiles
+      WHERE  (name ILIKE ${like} OR phone ILIKE ${like})
+      AND    gender = ${gender}
+      AND    status = ${status}
+    ` as CountRow[];
+    dataRows = await sql`
+      SELECT * FROM profiles
+      WHERE  (name ILIKE ${like} OR phone ILIKE ${like})
+      AND    gender = ${gender}
+      AND    status = ${status}
+      ORDER  BY submitted_at DESC
+      LIMIT  ${limit} OFFSET ${offset}
+    ` as ProfileRow[];
+  } else if (search && gender) {
+    const like = `%${search}%`;
+    countRows = await sql`
+      SELECT COUNT(*) AS count FROM profiles
+      WHERE  (name ILIKE ${like} OR phone ILIKE ${like})
+      AND    gender = ${gender}
+    ` as CountRow[];
+    dataRows = await sql`
+      SELECT * FROM profiles
+      WHERE  (name ILIKE ${like} OR phone ILIKE ${like})
+      AND    gender = ${gender}
+      ORDER  BY submitted_at DESC
+      LIMIT  ${limit} OFFSET ${offset}
+    ` as ProfileRow[];
+  } else if (search && status) {
+    const like = `%${search}%`;
+    countRows = await sql`
+      SELECT COUNT(*) AS count FROM profiles
+      WHERE  (name ILIKE ${like} OR phone ILIKE ${like})
+      AND    status = ${status}
+    ` as CountRow[];
+    dataRows = await sql`
+      SELECT * FROM profiles
+      WHERE  (name ILIKE ${like} OR phone ILIKE ${like})
+      AND    status = ${status}
+      ORDER  BY submitted_at DESC
+      LIMIT  ${limit} OFFSET ${offset}
+    ` as ProfileRow[];
+  } else if (gender && status) {
+    countRows = await sql`
+      SELECT COUNT(*) AS count FROM profiles
+      WHERE  gender = ${gender} AND status = ${status}
+    ` as CountRow[];
+    dataRows = await sql`
+      SELECT * FROM profiles
+      WHERE  gender = ${gender} AND status = ${status}
+      ORDER  BY submitted_at DESC
+      LIMIT  ${limit} OFFSET ${offset}
+    ` as ProfileRow[];
+  } else if (search) {
+    const like = `%${search}%`;
+    countRows = await sql`
+      SELECT COUNT(*) AS count FROM profiles
+      WHERE  name ILIKE ${like} OR phone ILIKE ${like}
+    ` as CountRow[];
+    dataRows = await sql`
+      SELECT * FROM profiles
+      WHERE  name ILIKE ${like} OR phone ILIKE ${like}
+      ORDER  BY submitted_at DESC
+      LIMIT  ${limit} OFFSET ${offset}
+    ` as ProfileRow[];
+  } else if (gender) {
+    countRows = await sql`
+      SELECT COUNT(*) AS count FROM profiles WHERE gender = ${gender}
+    ` as CountRow[];
+    dataRows = await sql`
+      SELECT * FROM profiles WHERE gender = ${gender}
+      ORDER  BY submitted_at DESC
+      LIMIT  ${limit} OFFSET ${offset}
+    ` as ProfileRow[];
+  } else if (status) {
+    countRows = await sql`
+      SELECT COUNT(*) AS count FROM profiles WHERE status = ${status}
+    ` as CountRow[];
+    dataRows = await sql`
+      SELECT * FROM profiles WHERE status = ${status}
+      ORDER  BY submitted_at DESC
+      LIMIT  ${limit} OFFSET ${offset}
+    ` as ProfileRow[];
+  } else {
+    countRows = await sql`
+      SELECT COUNT(*) AS count FROM profiles
+    ` as CountRow[];
+    dataRows = await sql`
+      SELECT * FROM profiles
+      ORDER  BY submitted_at DESC
+      LIMIT  ${limit} OFFSET ${offset}
+    ` as ProfileRow[];
   }
-  if (gender) {
-    where += " AND gender = ?";
-    params.push(gender);
-  }
-  if (status) {
-    where += " AND status = ?";
-    params.push(status);
-  }
 
-
-  const countRow = db
-    .prepare(`SELECT COUNT(*) as count FROM profiles ${where}`)
-    .get(...params) as { count: number };
-
-  const rows = db
-    .prepare(
-      `SELECT * FROM profiles ${where} ORDER BY submitted_at DESC LIMIT ? OFFSET ?`
-    )
-    .all(...params, limit, offset);
-
-  return { profiles: rows, total: countRow.count, page, limit };
+  const total = parseInt(countRows[0]?.count ?? "0", 10);
+  return { profiles: dataRows, total, page, limit };
 }
 
-export function deleteProfile(id: number) {
-  const db = getDb();
-  db.prepare("DELETE FROM profiles WHERE id = ?").run(id);
+// ---------------------------------------------------------------------------
+// Profiles – delete
+// ---------------------------------------------------------------------------
+
+export async function deleteProfile(id: number): Promise<void> {
+  await ensureSchema();
+  const sql = getSql();
+  await sql`DELETE FROM profiles WHERE id = ${id}`;
 }

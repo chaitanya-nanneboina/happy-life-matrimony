@@ -148,6 +148,8 @@
   line-height: 1.6;
   max-width: 220px;
   margin: 0 auto;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 /* Call to Action */
@@ -220,5 +222,24 @@
 
   .active .connectingLine {
     height: 100%;
+  }
+}
+
+/* Ensure step content doesn't overflow on 320px screens */
+@media (max-width: 400px) {
+  .stepMarkerContainer {
+    width: 72px;
+    min-width: 72px;
+  }
+  .stepContent {
+    min-width: 0;
+  }
+  .stepTitle {
+    font-size: var(--text-sm);
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+  .connectingLineContainer {
+    left: 52px;
   }
 }

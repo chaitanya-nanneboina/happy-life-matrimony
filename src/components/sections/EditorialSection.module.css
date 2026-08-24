@@ -62,6 +62,10 @@
   .bottomRow {
     grid-template-columns: 1fr;
   }
+  /* Prevent image grid children from overflowing their tracks */
+  .imageBlock {
+    min-width: 0;
+  }
 }
 
 /* Image Block Components */
@@ -211,4 +215,13 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.08em;
+}
+
+@media (max-width: 480px) {
+  .quoteBlock {
+    padding: var(--space-5) var(--space-2);
+  }
+  .quoteText {
+    font-size: var(--text-lg);
+  }
 }

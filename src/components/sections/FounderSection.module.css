@@ -17,6 +17,19 @@
     grid-template-columns: 1fr;
     gap: var(--space-4);
   }
+  /* Fix overflow sources: negative offsets only work well with the wider
+     desktop two-column layout. On mobile, remove them to prevent
+     the decorative elements extending past the viewport edge. */
+  .imageBg {
+    inset: 12px 0 -12px 12px; /* Remove the -12px right that caused overflow */
+  }
+  .founderBadge {
+    right: 0;           /* Was -10px — remove the rightward overhang */
+    bottom: -8px;
+  }
+  .imageCol {
+    overflow: hidden;   /* Contain any remaining decorative overflow */
+  }
 }
 
 /* Image Column styles */
@@ -149,4 +162,18 @@
 .contactBtn {
   width: fit-content;
   margin-top: 8px;
+}
+
+@media (max-width: 480px) {
+  /* Ensure name and philosophy text wrap properly on very small screens */
+  .name {
+    font-size: var(--text-2xl);
+  }
+  .philosophy {
+    font-size: var(--text-base);
+  }
+  .contactBtn {
+    width: 100%;
+    justify-content: center;
+  }
 }

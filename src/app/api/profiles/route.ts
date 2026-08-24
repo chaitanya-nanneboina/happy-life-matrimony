@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: false, message: "Please enter your city/town." }, { status: 400 });
     }
 
-    const profileId = createProfile({
+    const profileId = await createProfile({
       name: name.trim(),
       gender,
       looking_for,
